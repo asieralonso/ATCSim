@@ -54,20 +54,17 @@ Airport::Airport() {
 	points = INIT_POINTS;
 	max_flights = INIT_MAX_FLIGHTS;
 	SimTimeMod = 1.0;
-	storm = NULL;
 
-	pthread_mutex_init(&mutex, NULL);
+	 pthread_mutex_init(&mutex, NULL);
 }
 
 Airport::~Airport() {
 	std::list<Flight*>::iterator it;
 	for(it = flights.begin(); it!=flights.end(); ++it)
-		delete(*it);
+	delete(*it);
 	flights.clear();
 }
 
-
-void
 Airport::checkFinishStorm()
 {
 	float x, y, z, dist;
@@ -117,8 +114,6 @@ Airport::generate_storm()
 void
 Airport::generate_flight()
 {
-
-
 	std::cerr<<"Generate new flight";
 	float angle, x, y, z;
 	float bear, inc;
@@ -126,7 +121,7 @@ Airport::generate_flight()
 
 	angle = toRadians((float)(rand() % 360 - 180));
 
-	x = fabs(AIRPORT_DISTANCE_MAX * cos(angle)); //Only positive, for GyV3D!!!!!!!!!!!
+	x = fabs(AIRPORT_DISTANCE_MAX * cos(angle));
 	y = AIRPORT_DISTANCE_MAX * sin(angle);
 	z = FLIGHT_HEIGHT + (float)(rand() % 2000);
 
@@ -210,26 +205,12 @@ Airport::step()
 			//(*it)->draw();
 		}
 
-		pthread_mutex_lock (&mutex);
-		checkLandings();
-		checkCollisions();
-		checkCrashes();
-		pthread_mutex_unlock (&mutex);
-	}
-
 	pthread_mutex_lock (&mutex);
-
-	if(storm==NULL)
-	{
-		generate_storm();
-	}
-	else
-	{
-		storm->update(SimTimeMod * delta_t);
-		checkFlightsInStorm();
-		checkFinishStorm();
-	}
+	checkLandings();
+	checkCollisions();
+	checkCrashes();
 	pthread_mutex_unlock (&mutex);
+	}
 
 	if(flights.size()<max_flights)
 	{
@@ -237,9 +218,6 @@ Airport::step()
 		generate_flight();
 		pthread_mutex_unlock (&mutex);
 	}
-
-
-
 
 }
 
@@ -307,7 +285,7 @@ Airport::checkCollisions()
 	}
 }
 
-void
+
 Airport::checkFlightsInStorm()
 {
 	if(flights.empty() || storm==NULL ) return;
@@ -375,7 +353,7 @@ Airport::checkLandings()
 {
 	if(flights.empty()) return;
 
-	//pthread_mutex_lock (&mutex);
+	 //pthread_mutex_lock (&mutex);
 	std::list<Flight*>::iterator it;
 
 	it = flights.begin();
@@ -389,18 +367,17 @@ Airport::checkLandings()
 		{
 
 			std::cerr<<"Flight "<<(*it)->getId()<<" landed"<<std::endl;
-			points += (int)(*it)->getPoints();
-
 			it = removeFlight((*it)->getId());
 
 			std::cerr<<"*";
 
+			points += (int)(*it)->getPoints();
 
 			return;
 		}else
 			it++;
 	}
-	//pthread_mutex_unlock (&mutex);
+	 //pthread_mutex_unlock (&mutex);
 }
 
 void
@@ -443,7 +420,7 @@ ATCDisplay::ATCDFlights
 Airport::getFlights(const Ice::Current&)
 {
 
-	pthread_mutex_lock (&mutex);
+	 pthread_mutex_lock (&mutex);
 
 	//std::cerr<<"["<<flights.size()<<": ";
 	ATCDisplay::ATCDFlights ret;
@@ -456,14 +433,14 @@ Airport::getFlights(const Ice::Current&)
 	{
 		//std::cerr<<"A";
 
-		std::list<Route>::iterator itr;
+		std::list<PointRoute>::iterator itr;
 		ATCDisplay::ATCDRoute atcdr;
 		atcdr.clear();
 
 		for(itr= (*it)->getRoute()->begin(); itr!=(*it)->getRoute()->end(); ++itr)
 		{
 			//std::cerr<<"B";
-			Route r= (*itr);
+			PointRoute r= (*itr);
 
 			ATCDisplay::ATCDPosition p;
 			p.x = r.pos.get_x();

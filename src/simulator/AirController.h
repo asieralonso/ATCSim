@@ -26,13 +26,20 @@
 #define AIRCONTROLLER_H_
 
 #include "Singleton.h"
+#include "Flight.h"
 
-class AirController: public Singleton<AirController> {
+class AirController: public Singleton<AirController>
+{
 public:
 	AirController();
 	virtual ~AirController();
 
+	void WaitRoute(Flight *f, PointRoute pto1, PointRoute pto2, PointRoute pto3, PointRoute pto4);
+	void LandRoute(Flight *f, PointRoute pto1, PointRoute pto2, PointRoute pto3, PointRoute pto4);
 	void doWork();
+
+private:
+	bool busy_route;
 };
 
 #endif /* AIRCONTROLLER_H_ */

@@ -22,12 +22,11 @@
  *  along with ATCSim.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SIMULATOR_AIRPORT_H__
-#define SIMULATOR_AIRPORT_H__
+#ifndef AIRPORT_H_
+#define AIRPORT_H_
 
 #include "Singleton.h"
 #include "Flight.h"
-#include "Storm.h"
 #include "ATCDisplay.h"
 #include <math.h>
 
@@ -47,12 +46,10 @@ public:
     void NextFocus();
 
 	std::list<Flight*> getFlights() {return flights;};
-	Storm* getStorm() {return storm;};
-    Flight* getFocused(){return (*focus);};
-    void UpdateSimTime(float inc);
+  Flight* getFocused(){return (*focus);};
+  void UpdateSimTime(float inc);
 
 	virtual ATCDisplay::ATCDFlights getFlights(const Ice::Current&);
-	virtual ATCDisplay::ATCDStorm getStorm(const Ice::Current&);
 	virtual ATCDisplay::ATCDAirport getAirportInfo(const Ice::Current&);
 	virtual void UpdateSimT(float inc, const Ice::Current&);
 	virtual void NextFocus(const Ice::Current&);
@@ -64,20 +61,14 @@ public:
 private:
 
 	void checkLandings();
-	void checkCollisions();
-	void checkCrashes();
-	void checkFinishStorm();
-	void generate_flight();
-	void generate_storm();
-	void checkFlightsInStorm();
+	void checkCollisions();	// posible fallo de segmentacion
+	void checkCrashes(); // posible fallo de segmentacion
+	void generate_flight();	// posible fallo de segmentacion
 
 	std::list<Flight*>::iterator removeFlight(std::string id);
 
 	std::list<Flight*> flights;
 	std::list<Flight*>::iterator focus;
-
-	Storm *storm;
-
 
 	struct timeval last_ts;
 	Position final_pos;
@@ -85,11 +76,11 @@ private:
 	int points;
 	int max_flights;
 	long crono;
-    float SimTimeMod;
+  float SimTimeMod;
 
-    pthread_mutex_t mutex;
+  pthread_mutex_t mutex;
 
 
 };
 
-#endif  // SIMULATOR_AIRPORT_H__
+#endif /* AIRPORT_H_ */

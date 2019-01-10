@@ -33,7 +33,7 @@
 typedef struct {
 	Position pos;
 	float speed;
-} Route;
+} PointRoute;
 
 class Flight {
 public:
@@ -44,34 +44,29 @@ public:
 	void draw();
 
 
-	std::list<Route> *getRoute() { return &route;};
+	std::list<PointRoute> *getRoute() { return &route;};
 	bool routed() { return !route.empty();};
 	Position getPosition() { return pos;};
 	float getInclination() { return inclination;};
 	float getBearing() { return bearing;};
 	float getSpeed() { return speed;};
-	void setSpeed(float tgt_speed) {speed = checkSpeedLimits(tgt_speed);}
 	float getPoints() {return points;};
 	std::string getId(){return id;};
 	void setFocused(bool state) { focused = state;};
 	bool getFocused() { return focused;};
-
-	bool getInStorm() {return inStorm;};
-	void setInStorm(bool in) {inStorm=in;};
+	void setLand(bool land) { landing_ = land;};
+	bool getLand() { return landing_;};
 
 private:
 	std::string id;
 	Position pos, last_pos;
 	float bearing, inclination;
 	float speed, w_speed;
-	std::list<Route> route;
+	std::list<PointRoute> route;
 	bool focused;
-
-	bool inStorm;
+	bool landing_;
 
 	float points;
-
-	float checkSpeedLimits(float tgt_speed);
 };
 
 #endif /* FLIGHT_H_ */

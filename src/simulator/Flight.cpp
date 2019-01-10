@@ -48,11 +48,8 @@ Flight::Flight(std::string _id, Position _pos, float _bearing, float _inclinatio
 	pos = _pos;
 	bearing = _bearing;
 	inclination = _inclination;
-	//speed = _speed;
-	setSpeed(_speed);	// Through set in order to limit speeds
-
+	speed = _speed;
 	route.clear();
-	inStorm = false;
 
 	focused = false;
 	points = INIT_FLIGHT_POINTS;
@@ -85,7 +82,7 @@ Flight::update(float delta_t)
 
 		float goal_speed, diff_speed, acc;
 
-		goal_speed = checkSpeedLimits(route.front().speed);
+		goal_speed = route.front().speed;
 		acc = (goal_speed - speed);
 
 		if(fabs(acc)>MAX_ACELERATION) acc = (acc/fabs(acc))*MAX_ACELERATION;
@@ -112,18 +109,9 @@ Flight::update(float delta_t)
 	if(pos.distance(CPpos)<DIST_POINT)
 		route.pop_front();
 
-	if(inStorm)
-	{
-		//std::cout<<"["<<id<<"]In Storm"<<std::endl;
-		points = points - 2*delta_t;
-	}
-	else
-		points = points - delta_t;
-
-
+	points = points - delta_t;
 
 }
-
 
 float Flight::checkSpeedLimits(float tgt_speed){
 	return (tgt_speed > CRASH_SPEED_MAX ? CRASH_SPEED_MAX : tgt_speed);
@@ -175,7 +163,7 @@ float Flight::checkSpeedLimits(float tgt_speed){
 //
 //	if(focused)
 //	{
-//		std::list<Route>::iterator it;
+//		std::list<PointRoute>::iterator it;
 //
 //		TextDisplay *textDisplay = TextDisplay::getInstance();
 //		char pos_str[255];
@@ -220,7 +208,7 @@ float Flight::checkSpeedLimits(float tgt_speed){
 //			}
 //
 //
-//			textDisplay->displayText((char *)"Route", 15, 230, GUI::win_width, GUI::win_height, BLUE, GLUT_BITMAP_HELVETICA_12);
+//			textDisplay->displayText((char *)"PointRoute", 15, 230, GUI::win_width, GUI::win_height, BLUE, GLUT_BITMAP_HELVETICA_12);
 //
 //			int c = 0;
 //			for(it = route.begin(); it!=route.end(); ++it)
